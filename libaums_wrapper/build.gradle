@@ -7,7 +7,7 @@ apply plugin: 'org.jetbrains.dokka-android'
 ext {
     artifact = 'libaums_wrapper'
     group = 'eu.depau.etchdroid'
-    libraryVersion = '0.1'
+    libraryVersion = '0.1.1'
     publishedGroupId = 'eu.depau.etchdroid'
     libraryName = 'libaums_wrapper'
     libraryDescription = 'Wrapper for LibAUMS for EtchDroid to get around some different goals ' +
@@ -52,8 +52,8 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
 
-    implementation 'com.github.mjdev:libaums:0.7.0'
-    implementation 'com.github.Depau:kotlet-android:0.2.5'
+    api 'com.github.mjdev:libaums:0.7.0'
+    api 'com.github.Depau:kotlet-android:0.2.5'
 }
 
 
