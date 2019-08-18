@@ -1,0 +1,95 @@
+apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'com.github.dcendents.android-maven'
+apply plugin: 'org.jetbrains.dokka-android'
+
+ext {
+    artifact = 'libaums_wrapper'
+    group = 'eu.depau.etchdroid'
+    libraryVersion = '0.1'
+    publishedGroupId = 'eu.depau.etchdroid'
+    libraryName = 'libaums_wrapper'
+    libraryDescription = 'Wrapper for LibAUMS for EtchDroid to get around some different goals ' +
+            'between the two projects'
+    siteUrl = 'https://github.com/EtchDroid/libaums_wrapper'
+    gitUrl = 'https://github.com/EtchDroid/libaums_wrapper.git'
+    developerId = 'Depau'
+    developerName = 'Davide Depau'
+    developerEmail = 'davide@depau.eu'
+    licenseName = 'The Apache Software License, Version 2.0'
+    licenseUrl = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+    allLicenses = ["Apache-2.0"]
+}
+
+android {
+    compileSdkVersion 29
+
+    defaultConfig {
+        minSdkVersion 16
+        targetSdkVersion 29
+        versionCode 1
+        versionName "1.0"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    lintOptions {
+        abortOnError false
+    }
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation 'androidx.appcompat:appcompat:1.0.2'
+    implementation 'androidx.core:core-ktx:1.0.2'
+    testImplementation 'junit:junit:4.12'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.1'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
+
+    implementation 'com.github.mjdev:libaums:0.7.0'
+    implementation 'com.github.Depau:kotlet-android:0.2.5'
+}
+
+
+dokka {
+    moduleName = 'libaums_wrapper'
+    outputFormat = 'javadoc'
+    outputDirectory = "$buildDir/javadoc"
+
+    // List of files with module and package documentation
+    // http://kotlinlang.org/docs/reference/kotlin-doc.html#module-and-package-documentation
+    includes = ['README.md']
+
+    // Use to include or exclude non public members.
+    includeNonPublic = false
+
+    // Do not output deprecated members. Applies globally, can be overridden by packageOptions
+    skipDeprecated = true
+
+    // Emit warnings about not documented members. Applies globally, also can be overridden by packageOptions
+    reportUndocumented = true
+
+    skipEmptyPackages = true // Do not create index pages for empty packages
+}
+
+task dokkaJavadoc(type: org.jetbrains.dokka.gradle.DokkaTask) {
+    outputFormat = 'javadoc'
+    outputDirectory = "$buildDir/javadoc"
+}
+
+// build a jar with javadoc
+task javadocJar(type: Jar, dependsOn: dokkaJavadoc) {
+    classifier = 'javadoc'
+    from "$buildDir/javadoc"
+    archiveName = "javadoc.jar"
+}
+
+artifacts {
+    archives javadocJar
+}
