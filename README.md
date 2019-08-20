@@ -21,7 +21,7 @@ allprojects {
 
 Module `build.gradle`:
 
-```
+```gradle
 dependencies {
 	        api 'com.github.EtchDroid:libaums_wrapper:v0.1.1'
 }
