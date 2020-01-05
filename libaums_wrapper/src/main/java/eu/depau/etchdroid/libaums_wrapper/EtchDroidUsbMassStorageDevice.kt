@@ -158,6 +158,7 @@ private constructor(
 
         val communication = UsbCommunicationFactory.createUsbCommunication(
             deviceConnection,
+            usbInterface,
             outEndpoint,
             inEndpoint
         )
