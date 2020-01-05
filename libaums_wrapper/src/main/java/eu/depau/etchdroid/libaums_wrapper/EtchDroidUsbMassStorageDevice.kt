@@ -85,7 +85,7 @@ private constructor(
     private val inEndpoint: UsbEndpoint,
     private val outEndpoint: UsbEndpoint
 ) {
-    private lateinit var deviceConnection: UsbDeviceConnection
+    private lateinit var usbCommunication: UsbCommunication
     lateinit var blockDevices: Map<Int, BlockDeviceDriver>
 
     /**
@@ -145,33 +145,18 @@ private constructor(
      */
     @Throws(IOException::class)
     private fun setupDevice() {
-        Log.d(TAG, "setup device")
-        val deviceConnection: UsbDeviceConnection =
-            usbManager.openDevice(usbDevice) ?: throw IOException("deviceConnection is null!")
-        this.deviceConnection = deviceConnection
-
-        val claim = deviceConnection.claimInterface(usbInterface, true)
-
-        if (!claim) {
-            throw IOException("could not claim interface!")
-        }
-
-        val communication = UsbCommunicationFactory.createUsbCommunication(
-            deviceConnection,
-            usbInterface,
-            outEndpoint,
-            inEndpoint
-        )
-
+        usbCommunication = UsbCommunicationFactory
+            .createUsbCommunication(usbManager, usbDevice, usbInterface, outEndpoint, inEndpoint)
         val maxLun = ByteArray(1)
-        deviceConnection.controlTransfer(161, 254, 0, usbInterface.id, maxLun, 1, 5000)
+        usbCommunication.controlTransfer(161, 254, 0, usbInterface.id, maxLun, 1)
+
         Log.i(TAG, "MAX LUN " + maxLun[0].toInt())
 
         val mutableBlockDevices = mutableMapOf<Int, BlockDeviceDriver>()
 
         for (lun in 0..maxLun[0]) {
             val blockDevice =
-                BlockDeviceDriverFactory.createBlockDevice(communication, lun = lun.toByte())
+                BlockDeviceDriverFactory.createBlockDevice(usbCommunication, lun = lun.toByte())
             try {
                 blockDevice.init()
                 mutableBlockDevices[lun] = blockDevice
@@ -229,17 +214,7 @@ private constructor(
      * or write from or to the partitions returned by [.getPartitions].
      */
     fun close() {
-        Log.d(TAG, "close device")
-        
-        if (!::deviceConnection.isInitialized)
-            return
-
-        val release = deviceConnection.releaseInterface(usbInterface)
-        if (!release) {
-            Log.e(TAG, "could not release interface!")
-        }
-
-        deviceConnection.close()
+        usbCommunication.close()
         inited = false
     }
 
