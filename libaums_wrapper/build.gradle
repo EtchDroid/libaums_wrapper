@@ -52,7 +52,7 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
     androidTestImplementation 'me.jahnen:libaums-libusbcommunication:0.1'
     api 'com.github.Depau:kotlet-android:0.2.5'
-    api 'me.jahnen:libaums:0.7.6'
+    api 'me.jahnen:libaums:0.8.0'
 }
 
 

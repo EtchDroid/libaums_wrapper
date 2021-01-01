@@ -23,7 +23,7 @@ import android.util.Log
 import com.github.mjdev.libaums.UsbMassStorageDevice
 import com.github.mjdev.libaums.driver.BlockDeviceDriver
 import com.github.mjdev.libaums.driver.BlockDeviceDriverFactory
-import com.github.mjdev.libaums.driver.scsi.UnitNotReady
+import com.github.mjdev.libaums.driver.scsi.commands.sense.MediaNotInserted
 import com.github.mjdev.libaums.partition.Partition
 import com.github.mjdev.libaums.partition.PartitionTable
 import com.github.mjdev.libaums.partition.PartitionTableFactory
@@ -160,13 +160,8 @@ private constructor(
             try {
                 blockDevice.init()
                 mutableBlockDevices[lun] = blockDevice
-            } catch (e: UnitNotReady) {
-                if (maxLun[0] == 0.toByte()) {
-                    throw e
-                }
-                // else:  seems to support multiple logical units (e.g. card reader)
-                // so some LUNs may not be inserted. Silently fail in this case and
-                // continue with next LUN
+            } catch (e: MediaNotInserted) {
+                // This LUN does not have media inserted. Ignore it.
                 continue
             }
         }
