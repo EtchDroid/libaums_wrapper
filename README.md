@@ -1,5 +1,13 @@
 # Libaums Wrapper for EtchDroid
 
+## Archived
+
+This code has been merged into EtchDroid.
+
+This repo is kept here so older EtchDroid builds can be built.
+
+----
+
 This library is a shim to adapt [libaums](https://github.com/magnusja/libaums) to EtchDroid's needs.
 
 Previously EtchDroid used a fork in order to add the required features. However, right now enough
